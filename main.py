@@ -72,6 +72,13 @@ sun_dinner = "/html/body/div/div/div[5]/div[9]/div[2]/button[3]"
 sun_53 = "/html/body/div/div/div[5]/div[9]/div[2]/div/button[1]"
 sun_200 = "/html/body/div/div/div[5]/div[9]/div[2]/div/button[2]"
 
+'''
+# User Input goes here
+
+# Login and sign up functions go here
+
+# In line keyboard/Poll function goes here
+'''
 # Test list
 option_list = [mon_breakfast, mon_lunch, mon_dinner, tue_breakfast, tue_lunch, tue_dinner, wed_breakfast, wed_lunch,
                wed_dinner, thu_breakfast, thu_lunch, thu_dinner, fri_breakfast, fri_lunch, fri_dinner, sat_breakfast,
@@ -92,6 +99,8 @@ for i in loc_list:
     driver.find_element_by_xpath(i).click()
 
 """
+
+# Try and close should encapsulate finished code
 try:
     driver.get("https://indentyourration.web.app/")
     username_input = "/html/body/div/div/form/div/input[1]"
