@@ -15,12 +15,18 @@ def create_server_connection(host_name, user_name, user_password):
         print(f"Error: '{err}'")
 
     return connection
+def user_check(Tele_id,connection):
+    f = Fernet(Tele_id)
+    check_user = """IF EXISTS (SELECT 1 FROM dbo.users WHERE id = {id});""".format(id = f)
+    return check_user 
 
-def register(Tele_id, username, password):
+def register(Tele_id, username, password, connection):
     f = Fernet(Tele_id)
     token_id = f.encrypt(Tele_id)
     token_username = f.encrypt(username)
     token_password = f.encrypt(password)
-    new_user = """INSERT INTO users VALUES({token_id}, {token_username}, {token_password}""".format(token_id=token_id,
+    create_new_user = """INSERT INTO users VALUES({token_id}, {token_username}, {token_password});""".format(token_id=token_id,
                                                                                                     token_username= token_username,
                                                                                                     token_password= token_password)
+    execute_query(connection, create_new_user)
+
