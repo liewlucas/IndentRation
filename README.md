@@ -11,3 +11,5 @@ Chrome webdriver
 
 Python-telebot
 https://python-telegram-bot.readthedocs.io/en/stable/index.html
+
+Fernet
