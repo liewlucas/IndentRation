@@ -35,8 +35,8 @@ def pin_response(input_text):
     if len(pininput) == 4:
         try:
             pin_input = int(input_text)
-            replymessage = "Your pin is"
-            arrayofreply = [replymessage, str(pininput), 'use /indent to indent your rations. For more information on how to use this bot, use /help']
+            replymessage = "Your Account has been Registered!"
+            arrayofreply = [replymessage, 'use /indent to indent your rations. For more information on how to use this bot, use /help']
             fullreply = ' '
             reply = (fullreply.join(arrayofreply))
             return reply

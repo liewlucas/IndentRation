@@ -18,10 +18,10 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 import hashlib
 
-API_Key = '2115199713:AAECtuiBBVQDnHXD3eW9gtByOAz0KC_Mcws'
+API_Key = '5097438982:AAGX_AC6nR-KIWmXdGKEVnIQn3NmkBqV6Xs'
 tb = telegram.Bot(token = API_Key)
 logger = logging.getLogger(__name__)
-browser = webdriver.Chrome(executable_path="C:/Users/indentration2021/Desktop/chromedriver.exe")
+browser = webdriver.Chrome(executable_path="C:/Users/Lucas Liew/Desktop/chromedriver.exe")
 browser.get("https://indentyourration.web.app/")
 rationoptions = ['MON 53 L', 'MON 53 D', 'MON 200 L', 'MON 200 D', 'TUE 53 L', 'TUE 53 D', 'TUE 200 L', 'TUE 200 D',
                  'WED 53 L', 'WED 53 D', 'WED 200 L', 'WED 200 D', 'THU 53 L', 'THU 53 D', 'THU 200 L', 'THU 200 D',
@@ -67,42 +67,51 @@ def start_command(update, context):
         update.message.reply_text("Your account has already been registered, please use /indent to indent your ration or use /deleteaccount to delete and reregister your account")
         return ConversationHandler.END
     except:
-        update.message.reply_text("Welcome to indentrationbot. Please input your Username and password to indenrationwebsite to use this bot")
-        update.message.reply_text(
-            "To indent or reindent your ration use /indent" + '\n\n' + "To delete your account, use /deleteaccount" + '\n\n' + "To cancel the conversation, use /cancel")
-        update.message.reply_text("What is your username?", reply_markup=ForceReply(selective=True), )
+        update.message.reply_text("Welcome to Parakeet Indent. Please input your Username and Password for the IndentRationSite in the following prompts to register your account")
+        #update.message.reply_text(
+         #   "To indent or reindent your ration use /indent" + '\n\n' + "To delete your account, use /deleteaccount" + '\n\n' + "To cancel the conversation, use /cancel")
+        update.message.reply_text("What is your Username?", reply_markup=ForceReply(selective=True), )
         D.insert_acc(A.Account(userchat_id, '', '', ''))
         return USERNAME
 
 def username (update:Update, context: CallbackContext) -> int:
+    messageid = update.message.message_id
     userchatid = str(update.message.chat.id)
     userchat_id = hash(userchatid)
     inputusername = str(update.message.text)
     f = Fernet(encryption_key(userchatid))
     encrypted = f.encrypt(inputusername.encode())
     D.insert_username(userchat_id, encrypted)
-    input_username=R.username_response(inputusername)
-    update.message.reply_text(input_username)
+    #input_username=R.username_response(inputusername)
+    #update.message.reply_text(input_username)
+    update.message.reply_text("Your Username has been Recorded!")
+    tb.deleteMessage(userchatid,messageid)
     update.message.reply_text("What is your password?", reply_markup=ForceReply(selective=True),)
     return PASSWORD
 
 def password (update:Update, context: CallbackContext) -> int:
+    messageid = update.message.message_id
     userchatid = str(update.message.chat.id)
     userchat_id = hash(userchatid)
     inputpassword = str(update.message.text)
     f = Fernet(encryption_key(userchatid))
     encrypted = f.encrypt(inputpassword.encode())
     D.insert_password(userchat_id, encrypted)
-    input_password = R.password_response(inputpassword)
-    update.message.reply_text(input_password)
+    #input_password = R.password_response(inputpassword)
+    #update.message.reply_text(input_password)
+    update.message.reply_text("Your Password has been Recorded!")
+    tb.deleteMessage(userchatid, messageid)
     update.message.reply_text("Please provide a 4-digit pin", reply_markup=ForceReply(selective=True), )
     return PIN
 
 def pin(update:Update, context:CallbackContext) -> int:
+    messageid = update.message.message_id
+    update.message.reply_text("Reigstering Account...")
     userchatid = str(update.message.chat.id)
     userchat_id = hash(userchatid)
     inputpin = (update.message.text)
     input_pin = R.pin_response(inputpin)
+    tb.deleteMessage(userchatid, messageid)
     if input_pin == 'Sorry your input was invalid, please input another pin':
         update.message.reply_text(input_pin)
         return PIN
@@ -231,6 +240,8 @@ def indent_command(update:Update, context: CallbackContext) -> int:
         update.message.reply_text('you have entered an invalid pin, please enter your pin again')
         return PINCHECK
     else:
+        messageid = update.message.message_id
+        tb.deleteMessage(userchatid, messageid)
         update.message.reply_text("What would you like to indent",
                                       reply_markup=ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False,
                                                                        selective=True))
@@ -437,6 +448,7 @@ def indent(update:Update, context: CallbackContext) -> int:
                 D.updateSUN53D(userchat_id, 'NIL')
                 update.message.reply_text(inputrationoption + ' has been unselected')
     elif inputrationoption == 'DONE':
+        update.message.reply_text("Indenting in Progress...")
         wrong_date = []
         options_list = D.getrationoptions(userchat_id)
         if (options_list[0][1] == 'YES' or options_list[0][2] == 'YES') and (
